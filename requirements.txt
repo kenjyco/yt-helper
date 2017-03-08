@@ -1,0 +1,8 @@
+youtube-dl
+click
+input-helper
+
+# For development
+ipython
+pdbpp
+pytest
