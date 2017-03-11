@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 import os
 import re
+import logging
 import click
 import input_helper as ih
 from glob import glob
@@ -14,29 +15,45 @@ See:
 """
 
 
+LOGFILE = 'log--yt-helper.log'
+logging.basicConfig(
+        format='%(asctime)s - %(levelname)s - %(funcName)s: %(message)s',
+        level=logging.DEBUG,
+        filename=LOGFILE,
+        filemode='a')
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s: %(message)s')
+console.setFormatter(formatter)
+logging.getLogger('').addHandler(console)
+
+
 def delete_all_extra_files(path='.'):
     for fname in glob(os.path.join(path, '*.f???.*')):
         os.remove(fname)
-        print('Removed {}'.format(repr(fname)))
+        logging.debug('Removed {}'.format(repr(fname)))
     for fname in glob(os.path.join(path, '**/*.f???.*')):
         os.remove(fname)
-        print('Removed {}'.format(repr(fname)))
+        logging.debug('Removed {}'.format(repr(fname)))
 
 
 class MyLogger(object):
     def debug(self, msg):
-        print('== DEBUG ==', msg)
+        logging.debug(msg)
 
     def warning(self, msg):
-        print('== WARNING ==', msg)
+        logging.warning(msg)
 
     def error(self, msg):
-        print('== ERROR ==', msg)
+        logging.error(msg)
+
+    def info(self, msg):
+        logging.info(msg)
 
 
 def my_hook(d):
     if d['status'] == 'finished':
-        print('Downloaded {} ({}) in {}'.format(
+        logging.info('Downloaded {} ({}) in {}'.format(
             d.get('filename', 'unknown file'),
             d.get('_total_bytes_str', 'unknown bytes'),
             d.get('_elapsed_str', 'unknown time'),
@@ -89,6 +106,7 @@ def av_from_url(url, **kwargs):
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)
         formats = info.pop('formats', None)
+        logging.info('Fetching {}'.format(url))
         ydl.download([url])
 
     for key in (
@@ -128,10 +146,6 @@ def av_from_url(url, **kwargs):
     help='Allow downloading entire playlist'
 )
 @click.option(
-    '--quiet', '-q', 'quiet', is_flag=True, default=False,
-    help='Don\'t print messages to stdout'
-)
-@click.option(
     '--thumbnail', '-t', 'thumbnail', is_flag=True, default=False,
     help='Download thumbnail image of video'
 )
@@ -163,13 +177,10 @@ def main(**kwargs):
     for url in urls:
         results.append(av_from_url(url, **kwargs))
     delete_all_extra_files()
-    #
-    #
-    # return results
+
     from pprint import pprint
-    pprint(results)
-    #
-    #
+    with open(LOGFILE, 'a') as fp:
+        pprint(results, fp)
 
 
 if __name__ == '__main__':
