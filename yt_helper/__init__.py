@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 import os
 import logging
 from glob import glob
+from pprint import pprint
 import youtube_dl
 
 """
@@ -61,7 +62,6 @@ def av_from_url(url, **kwargs):
     """Download audio and/or video from a URL with `youtube-dl`
 
     - playlist: if True, allow downloading entire playlist
-    - quiet: if True, don't print messages to stdout
     - thumbnail: if True, download thumbnail image of video
     - description: if True, download description of video to a file
     - subtitles: if True, embed subtitles in downloaded video (if available)
@@ -73,7 +73,7 @@ def av_from_url(url, **kwargs):
         'restrictfilenames': True,
         'ignoreerrors': True,
         'noplaylist': not kwargs.get('playlist', False),
-        'quiet': kwargs.get('quiet', True),
+        'quiet': True,
         'writethumbnail': kwargs.get('thumbnail', False),
         'writedescription': kwargs.get('description', False),
         'writesubtitles': kwargs.get('subtitles', False),
@@ -91,7 +91,7 @@ def av_from_url(url, **kwargs):
             # 'format': 'bestaudio[ext!=webm]/best[ext!=webm]',
             'format': 'bestaudio/best',
         })
-    if kwargs.get('mp3', True):
+    if kwargs.get('mp3', False):
         ydl_opts.update({
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
@@ -106,6 +106,7 @@ def av_from_url(url, **kwargs):
         logging.info('Fetching {}'.format(url))
         ydl.download([url])
 
+    delete_all_extra_files()
     for key in (
         'age_limit',
         'annotations',
@@ -129,5 +130,8 @@ def av_from_url(url, **kwargs):
         'webpage_url_basename',
     ):
         info.pop(key, None)
+
+    with open(LOGFILE, 'a') as fp:
+        pprint(info, fp)
 
     return info

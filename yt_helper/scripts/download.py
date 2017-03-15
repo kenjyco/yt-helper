@@ -43,11 +43,6 @@ def main(**kwargs):
     results = []
     for url in urls:
         results.append(yh.av_from_url(url, **kwargs))
-    yh.delete_all_extra_files()
-
-    from pprint import pprint
-    with open(yh.LOGFILE, 'a') as fp:
-        pprint(results, fp)
 
 
 if __name__ == '__main__':
