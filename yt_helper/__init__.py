@@ -14,44 +14,46 @@ See:
 
 
 LOGFILE = 'log--yt-helper.log'
-logging.basicConfig(
-        format='%(asctime)s - %(levelname)s - %(funcName)s: %(message)s',
-        level=logging.DEBUG,
-        filename=LOGFILE,
-        filemode='a')
-console = logging.StreamHandler()
-console.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s: %(message)s')
-console.setFormatter(formatter)
-logging.getLogger('').addHandler(console)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+file_handler = logging.FileHandler(LOGFILE, mode='a')
+file_handler.setLevel(logging.DEBUG)
+file_handler.setFormatter(logging.Formatter(
+    '%(asctime)s - %(levelname)s - %(funcName)s: %(message)s'
+))
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+console_handler.setFormatter(logging.Formatter('%(asctime)s: %(message)s'))
+logger.addHandler(file_handler)
+logger.addHandler(console_handler)
 
 
 def delete_all_extra_files(path='.'):
     for fname in glob(os.path.join(path, '*.f???.*')):
         os.remove(fname)
-        logging.debug('Removed {}'.format(repr(fname)))
+        logger.debug('Removed {}'.format(repr(fname)))
     for fname in glob(os.path.join(path, '**/*.f???.*')):
         os.remove(fname)
-        logging.debug('Removed {}'.format(repr(fname)))
+        logger.debug('Removed {}'.format(repr(fname)))
 
 
 class MyLogger(object):
     def debug(self, msg):
-        logging.debug(msg)
+        logger.debug(msg)
 
     def warning(self, msg):
-        logging.warning(msg)
+        logger.warning(msg)
 
     def error(self, msg):
-        logging.error(msg)
+        logger.error(msg)
 
     def info(self, msg):
-        logging.info(msg)
+        logger.info(msg)
 
 
 def my_hook(d):
     if d['status'] == 'finished':
-        logging.info('Downloaded {} ({}) in {}'.format(
+        logger.info('Downloaded {} ({}) in {}'.format(
             d.get('filename', 'unknown file'),
             d.get('_total_bytes_str', 'unknown bytes'),
             d.get('_elapsed_str', 'unknown time'),
@@ -103,7 +105,7 @@ def av_from_url(url, **kwargs):
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)
         formats = info.pop('formats', None)
-        logging.info('Fetching {}'.format(url))
+        logger.info('Fetching {}'.format(url))
         ydl.download([url])
 
     delete_all_extra_files()
