@@ -19,7 +19,6 @@ Usage: yt-download [OPTIONS] [ARGS]...
 Options:
   -o, --template TEXT  string representing generated filenames
   -p, --playlist       Allow downloading entire playlist
-  -q, --quiet          Don't print messages to stdout
   -t, --thumbnail      Download thumbnail image of video
   -d, --description    Download description of video to a file
   -s, --subtitles      Embed subtitles in the downloaded video
