@@ -70,6 +70,10 @@ def av_from_url(url, **kwargs):
     - template: string representing generated filenames
     - audio_only: if True, don't keep the video file if one is downloaded
     - mp3: if True, convert downloaded audio to MP3 file
+    - logger: a logger object with `debug`, `warning`, `error`, `info` methods
+      that accept a message string and do something with it
+    - hook: progress hook function that accepts a single argument, which
+      youtube-dl will fill with a dict of information (check `status` key)
     """
     ydl_opts = {
         'restrictfilenames': True,
@@ -82,8 +86,8 @@ def av_from_url(url, **kwargs):
         'keepvideo': True,
         # 'format': 'bestvideo[ext!=webm]+bestaudio[ext!=webm]/best[ext!=webm]',
         'format': 'bestvideo+bestaudio/best',
-        'logger': MyLogger(),
-        'progress_hooks': [my_hook],
+        'logger': kwargs.get('logger', MyLogger()),
+        'progress_hooks': [kwargs.get('hook', my_hook)],
     }
     if 'template' in kwargs and kwargs['template']:
         ydl_opts.update({'outtmpl': kwargs['template']})
