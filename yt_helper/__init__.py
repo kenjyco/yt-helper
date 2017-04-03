@@ -4,6 +4,39 @@ import logging
 from glob import glob
 from pprint import pprint
 import youtube_dl
+try:
+    import redis_helper as rh
+    import input_helper as ih
+
+except ImportError:
+    URLS = None
+    FILES = None
+    COMMENTS = None
+else:
+    URLS = rh.Collection(
+        'av',
+        'url',
+        unique_field='url',
+        index_fields='domain',
+        insert_ts=True,
+    )
+
+    FILES = rh.Collection(
+        'av',
+        'file',
+        unique_field='basename',
+        index_fields='url',
+        json_fields='queries,exts,yt',   # queries & exts are lists, yt is dict of info
+        insert_ts=True,
+    )
+
+    COMMENTS = rh.Collection(
+        'av',
+        'comment',
+        index_fields='basename,timestamp',
+        json_fields=','.join(ih.SPECIAL_TEXT_RETURN_FIELDS),
+        insert_ts=True,
+    )
 
 """
 See:
