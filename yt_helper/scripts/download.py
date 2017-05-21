@@ -9,6 +9,10 @@ import yt_helper as yh
     help='string representing generated filenames'
 )
 @click.option(
+    '--max-height', '-o', 'max_height', default=720,
+    help='maximum height of video (i.e. 1080, 720, 480, 240.. default 720)'
+)
+@click.option(
     '--playlist', '-p', 'playlist', is_flag=True, default=False,
     help='Allow downloading entire playlist'
 )

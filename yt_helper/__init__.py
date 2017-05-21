@@ -43,6 +43,7 @@ else:
         URLS = None
         FILES = None
         COMMENTS = None
+
 """
 See:
 
@@ -104,6 +105,7 @@ def av_from_url(url, **kwargs):
     - playlist: if True, allow downloading entire playlist
     - thumbnail: if True, download thumbnail image of video
     - description: if True, download description of video to a file
+    - max_height: maximum height of video (i.e. 1080, 720, 480, 240.. default 720)
     - subtitles: if True, embed subtitles in downloaded video (if available)
     - template: string representing generated filenames
     - audio_only: if True, don't keep the video file if one is downloaded
@@ -113,6 +115,10 @@ def av_from_url(url, **kwargs):
     - hook: progress hook function that accepts a single argument, which
       youtube-dl will fill with a dict of information (check `status` key)
     """
+    try:
+        max_height = int(kwargs.get('max_height', 720))
+    except ValueError:
+        max_height = 720
     ydl_opts = {
         'restrictfilenames': True,
         'ignoreerrors': True,
@@ -123,7 +129,7 @@ def av_from_url(url, **kwargs):
         'writesubtitles': kwargs.get('subtitles', False),
         'keepvideo': True,
         # 'format': 'bestvideo[ext!=webm]+bestaudio[ext!=webm]/best[ext!=webm]',
-        'format': 'bestvideo+bestaudio/best',
+        'format': 'bestvideo[height<=?{height}]+bestaudio/best[height<=?{height}]'.format(height=max_height),
         'logger': kwargs.get('logger', MyLogger()),
         'progress_hooks': [kwargs.get('hook', my_hook)],
     }
