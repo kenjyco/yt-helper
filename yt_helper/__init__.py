@@ -1,8 +1,10 @@
 from __future__ import unicode_literals
 import os
+import re
 import logging
 from glob import glob
 from pprint import pprint
+from functools import partial
 import youtube_dl
 try:
     import redis_helper as rh
@@ -10,11 +12,19 @@ try:
     from redis import ConnectionError as RedisConnectionError
 
 except ImportError:
+    QUERIES = None
     URLS = None
     FILES = None
     COMMENTS = None
 else:
     try:
+        QUERIES = rh.Collection(
+            'av',
+            'query',
+            unique_field='query',
+            insert_ts=True,
+        )
+
         URLS = rh.Collection(
             'av',
             'url',
@@ -28,7 +38,7 @@ else:
             'file',
             unique_field='basename',
             index_fields='url',
-            json_fields='queries,exts,yt',   # queries & exts are lists, yt is dict of info
+            json_fields='queries_in,queries_out,exts,yt',   # queries & exts are lists, yt is dict of info
             insert_ts=True,
         )
 
@@ -40,6 +50,7 @@ else:
             insert_ts=True,
         )
     except RedisConnectionError:
+        QUERIES = None
         URLS = None
         FILES = None
         COMMENTS = None
@@ -65,6 +76,37 @@ console_handler.setLevel(logging.INFO)
 console_handler.setFormatter(logging.Formatter('%(asctime)s: %(message)s'))
 logger.addHandler(file_handler)
 logger.addHandler(console_handler)
+IGNORE_INFO_KEYS = (
+    'age_limit',
+    'annotations',
+    'automatic_captions',
+    'episode_number',
+    'format_id',
+    'format_note',
+    'formats',
+    'http_headers',
+    'is_live',
+    'license',
+    'player_url',
+    'preference',
+    'protocol',
+    'requested_subtitles',
+    'requested_formats',
+    'season_number',
+    'series',
+    'start_time',
+    'vcodec',
+    'webpage_url',
+    'webpage_url_basename',
+)
+
+
+def get_real_basename(filename=''):
+    """Return basename of filename, removing extension and any `*.f???` component"""
+    if filename:
+        basename, ext = os.path.splitext(os.path.basename(filename))
+        return re.sub(r'(^.*)\.f\d+$', r'\1', basename)
+    return ''
 
 
 def delete_all_extra_files(path='.'):
@@ -90,13 +132,34 @@ class MyLogger(object):
         logger.info(msg)
 
 
-def my_hook(d):
+def my_hook(d, url='', query='', dirname=''):
     if d['status'] == 'finished':
+        filename = d.get('filename', '')
         logger.info('Downloaded {} ({}) in {}'.format(
-            d.get('filename', 'unknown file'),
+            filename or 'unknown file',
             d.get('_total_bytes_str', 'unknown bytes'),
             d.get('_elapsed_str', 'unknown time'),
         ))
+        if FILES:
+            basename = get_real_basename(filename)
+            try:
+                FILES.add(
+                    basename=basename,
+                    url=url,
+                    queries_in=[query],
+                    dirname=dirname,
+                )
+            except AssertionError:
+                hash_id = FILES.get_hash_id_for_unique_value(basename)
+                queries_in = FILES.get(hash_id, 'queries_in')['queries_in']
+                if query not in queries_in:
+                    queries_in.append(query)
+                FILES.update(
+                    hash_id,
+                    url=url,
+                    queries_in=queries_in,
+                    dirname=dirname,
+                )
 
 
 def av_from_url(url, **kwargs):
@@ -112,13 +175,21 @@ def av_from_url(url, **kwargs):
     - mp3: if True, convert downloaded audio to MP3 file
     - logger: a logger object with `debug`, `warning`, `error`, `info` methods
       that accept a message string and do something with it
-    - hook: progress hook function that accepts a single argument, which
-      youtube-dl will fill with a dict of information (check `status` key)
+    - hook: progress hook function that accepts a single positional argument
+      (dict of info from youtube-dl; check 'status' key)
+      and optional kwargs (for receiving 'url', 'query', and 'dirname')
+    - query: the search query that produced 'url' in the results
     """
     try:
         max_height = int(kwargs.get('max_height', 720))
     except ValueError:
         max_height = 720
+    hook = partial(
+        kwargs.get('hook', my_hook),
+        url=url,
+        query=kwargs.get('query', ''),
+        dirname=os.getcwd(),
+    )
     ydl_opts = {
         'restrictfilenames': True,
         'ignoreerrors': True,
@@ -131,7 +202,7 @@ def av_from_url(url, **kwargs):
         # 'format': 'bestvideo[ext!=webm]+bestaudio[ext!=webm]/best[ext!=webm]',
         'format': 'bestvideo[height<=?{height}]+bestaudio/best[height<=?{height}]'.format(height=max_height),
         'logger': kwargs.get('logger', MyLogger()),
-        'progress_hooks': [kwargs.get('hook', my_hook)],
+        'progress_hooks': [hook],
     }
     if 'template' in kwargs and kwargs['template']:
         ydl_opts.update({'outtmpl': kwargs['template']})
@@ -152,34 +223,22 @@ def av_from_url(url, **kwargs):
 
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)
-        formats = info.pop('formats', None)
         logger.info('Fetching {}'.format(url))
         ydl.download([url])
 
     delete_all_extra_files()
-    for key in (
-        'age_limit',
-        'annotations',
-        'automatic_captions',
-        'episode_number',
-        'format_id',
-        'format_note',
-        'http_headers',
-        'is_live',
-        'license',
-        'player_url',
-        'preference',
-        'protocol',
-        'requested_subtitles',
-        'requested_formats',
-        'season_number',
-        'series',
-        'start_time',
-        'vcodec',
-        'webpage_url',
-        'webpage_url_basename',
-    ):
+    for key in IGNORE_INFO_KEYS:
         info.pop(key, None)
+    if 'entries' in info:
+        # Playlist link was processed
+        info['entries'] = [
+            {
+                k: v
+                for k, v in entry.items()
+                if k not in IGNORE_INFO_KEYS
+            }
+            for entry in info['entries']
+        ]
 
     with open(LOGFILE, 'a') as fp:
         pprint(info, fp)
