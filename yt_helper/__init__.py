@@ -227,20 +227,21 @@ def av_from_url(url, **kwargs):
         ydl.download([url])
 
     delete_all_extra_files()
-    for key in IGNORE_INFO_KEYS:
-        info.pop(key, None)
-    if 'entries' in info:
-        # Playlist link was processed
-        info['entries'] = [
-            {
-                k: v
-                for k, v in entry.items()
-                if k not in IGNORE_INFO_KEYS
-            }
-            for entry in info['entries']
-        ]
+    if info:
+        for key in IGNORE_INFO_KEYS:
+            info.pop(key, None)
+        if 'entries' in info:
+            # Playlist link was processed
+            info['entries'] = [
+                {
+                    k: v
+                    for k, v in entry.items()
+                    if k not in IGNORE_INFO_KEYS
+                }
+                for entry in info['entries']
+            ]
 
-    with open(LOGFILE, 'a') as fp:
-        pprint(info, fp)
+        with open(LOGFILE, 'a') as fp:
+            pprint(info, fp)
 
     return info
