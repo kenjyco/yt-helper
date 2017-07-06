@@ -20,11 +20,13 @@ The ``yt-download`` script is provided
       - args: urls or filenames containing urls
 
     Options:
-      -o, --template TEXT  string representing generated filenames
-      -p, --playlist       Allow downloading entire playlist
-      -t, --thumbnail      Download thumbnail image of video
-      -d, --description    Download description of video to a file
-      -s, --subtitles      Embed subtitles in the downloaded video
-      -a, --audio-only     Don't keep the video file if one was downloaded
-      -m, --mp3            Convert downloaded audio to MP3 file
-      --help               Show this message and exit.
+      -o, --template TEXT       string representing generated filenames
+      -h, --max-height INTEGER  maximum height of video (i.e. 1080, 720, 480,
+                                240.. default 720)
+      -p, --playlist            Allow downloading entire playlist
+      -t, --thumbnail           Download thumbnail image of video
+      -d, --description         Download description of video to a file
+      -s, --subtitles           Embed subtitles in the downloaded video
+      -a, --audio-only          Don't keep the video file if one was downloaded
+      -m, --mp3                 Convert downloaded audio to MP3 file
+      --help                    Show this message and exit.
