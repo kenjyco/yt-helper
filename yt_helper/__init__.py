@@ -238,7 +238,7 @@ def av_from_url(url, **kwargs):
                     for k, v in entry.items()
                     if k not in IGNORE_INFO_KEYS
                 }
-                for entry in info['entries']
+                for entry in info['entries'] if entry
             ]
 
         with open(LOGFILE, 'a') as fp:
