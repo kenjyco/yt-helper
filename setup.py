@@ -28,6 +28,7 @@ setup(
     entry_points={
         'console_scripts': [
             'yt-download=yt_helper.scripts.download:main',
+            'yt-search=yt_helper.scripts.search:main',
         ],
     },
     classifiers=[
