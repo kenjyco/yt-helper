@@ -45,7 +45,7 @@ else:
         COMMENTS = rh.Collection(
             'av',
             'comment',
-            index_fields='basename,timestamp',
+            index_fields='basename',
             json_fields=','.join(ih.SPECIAL_TEXT_RETURN_FIELDS),
             insert_ts=True,
         )
