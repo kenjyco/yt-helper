@@ -140,7 +140,7 @@ def my_hook(d, url='', query='', dirname=''):
             d.get('_total_bytes_str', 'unknown bytes'),
             d.get('_elapsed_str', 'unknown time'),
         ))
-        if FILES:
+        if FILES is not None:
             basename = get_real_basename(filename)
             try:
                 FILES.add(
