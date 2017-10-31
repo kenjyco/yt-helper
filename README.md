@@ -13,7 +13,7 @@ or
 Install with `pip`
 
 ```
-% pip install yt-helper
+% pip3 install yt-helper
 ```
 
 ## Usage
@@ -58,5 +58,53 @@ Options:
   --help                          Show this message and exit.
 ```
 
-> Note: to use `yt-search`, you must also install `parse-helper`. See
-> [parse-helper README](https://github.com/kenjyco/parse-helper/blob/master/README.md).
+## Optional Installs
+
+### yt-search
+
+In order to use the `yt-search` command, you must also install the
+`parse-helper` package and it's dependencies.
+
+Install system requirements for `lxml`
+
+```
+% sudo apt-get install -y libxml2 libxslt1.1 libxml2-dev libxslt1-dev zlib1g-dev
+
+or
+
+% brew install libxml2
+```
+
+Install with `pip`
+
+```
+% pip3 install parse-helper
+```
+
+### Collections/models (QUERIES, URLS, FILES, COMMENTS)
+
+In order to make use of the `QUERIES`, `URLS`, `FILES`, and `COMMENTS`
+collections, you must also install the `redis-helper` package and have a Redis
+server running.
+
+If the collections/models are available, some functions will save relevant info
+to them.
+
+> See: https://github.com/kenjyco/redis-helper#intro
+
+Install Redis and start server
+
+```
+% sudo apt-get install -y redis-server
+
+or
+
+% brew install redis@3.2
+% brew services start redis@3.2
+```
+
+Install with `pip`
+
+```
+% pip3 install redis-helper
+```
