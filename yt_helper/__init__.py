@@ -37,7 +37,7 @@ else:
             'av',
             'file',
             unique_field='basename',
-            index_fields='url',
+            index_fields='url,vid,audio',
             json_fields='queries_in,queries_out,exts,yt',   # queries & exts are lists, yt is dict of info
             insert_ts=True,
         )
@@ -132,7 +132,7 @@ class MyLogger(object):
         logger.info(msg)
 
 
-def my_hook(d, url='', query='', dirname=''):
+def my_hook(d, url='', query='', dirname='', vid='', audio=''):
     if d['status'] == 'finished':
         filename = d.get('filename', '')
         logger.info('Downloaded {} ({}) in {}'.format(
@@ -146,6 +146,8 @@ def my_hook(d, url='', query='', dirname=''):
                 FILES.add(
                     basename=basename,
                     url=url,
+                    vid=vid,
+                    audio=audio,
                     queries_in=[query],
                     dirname=dirname,
                 )
@@ -157,6 +159,8 @@ def my_hook(d, url='', query='', dirname=''):
                 FILES.update(
                     hash_id,
                     url=url,
+                    vid=vid,
+                    audio=audio,
                     queries_in=queries_in,
                     dirname=dirname,
                 )
@@ -187,6 +191,8 @@ def av_from_url(url, **kwargs):
     hook = partial(
         kwargs.get('hook', my_hook),
         url=url,
+        vid=not kwargs.get('audio_only'),
+        audio=kwargs.get('audio_only') or kwargs.get('mp3'),
         query=kwargs.get('query', ''),
         dirname=os.getcwd(),
     )
