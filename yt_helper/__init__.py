@@ -15,7 +15,8 @@ except ImportError:
     QUERIES = None
     URLS = None
     FILES = None
-    COMMENTS = None
+    AUDIO_COMMENTS = None
+    VIDEO_COMMENTS = None
 else:
     try:
         QUERIES = rh.Collection(
@@ -42,8 +43,16 @@ else:
             insert_ts=True,
         )
 
-        COMMENTS = rh.Collection(
-            'av',
+        AUDIO_COMMENTS = rh.Collection(
+            'audio',
+            'comment',
+            index_fields='basename',
+            json_fields=','.join(ih.SPECIAL_TEXT_RETURN_FIELDS),
+            insert_ts=True,
+        )
+
+        VIDEO_COMMENTS = rh.Collection(
+            'vid',
             'comment',
             index_fields='basename',
             json_fields=','.join(ih.SPECIAL_TEXT_RETURN_FIELDS),
@@ -53,7 +62,8 @@ else:
         QUERIES = None
         URLS = None
         FILES = None
-        COMMENTS = None
+        AUDIO_COMMENTS = None
+        VIDEO_COMMENTS = None
 
 """
 See:
