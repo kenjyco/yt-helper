@@ -263,4 +263,4 @@ def av_from_url(url, **kwargs):
     return info
 
 
-import yt_helper.legacy as legacy
+from yt_helper import legacy
