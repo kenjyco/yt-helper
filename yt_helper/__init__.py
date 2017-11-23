@@ -41,7 +41,7 @@ else:
             'av',
             'file',
             unique_field='basename',
-            index_fields='url,vid,audio',
+            index_fields='vid,audio',
             json_fields='queries_in,queries_out,exts,yt',   # queries & exts are lists, yt is dict of info
             insert_ts=True,
         )
