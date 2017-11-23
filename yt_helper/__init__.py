@@ -152,8 +152,8 @@ def my_hook(d, url='', query='', dirname='', vid='', audio=''):
             d.get('_total_bytes_str', 'unknown bytes'),
             d.get('_elapsed_str', 'unknown time'),
         ))
+        basename = get_real_basename(filename)
         if FILES is not None:
-            basename = get_real_basename(filename)
             try:
                 FILES.add(
                     basename=basename,
@@ -165,7 +165,11 @@ def my_hook(d, url='', query='', dirname='', vid='', audio=''):
                 )
             except AssertionError:
                 hash_id = FILES.get_hash_id_for_unique_value(basename)
-                queries_in = FILES.get(hash_id, 'queries_in')['queries_in']
+                queries_in = FILES.get(
+                    hash_id,
+                    'queries_in',
+                    update_get_stats=False
+                )['queries_in']
                 if query not in queries_in:
                     queries_in.append(query)
                 FILES.update(
