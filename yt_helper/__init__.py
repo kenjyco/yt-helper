@@ -23,6 +23,7 @@ else:
             'av',
             'query',
             unique_field='query',
+            json_fields='basenames,related',
             insert_ts=True,
         )
 
@@ -31,6 +32,7 @@ else:
             'url',
             unique_field='url',
             index_fields='domain',
+            json_fields='basenames',
             insert_ts=True,
         )
 
