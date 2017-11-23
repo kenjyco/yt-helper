@@ -5,6 +5,7 @@ import logging
 from glob import glob
 from pprint import pprint
 from functools import partial
+from urllib.parse import urlparse
 import youtube_dl
 try:
     import redis_helper as rh
@@ -179,6 +180,46 @@ def my_hook(d, url='', query='', dirname='', vid='', audio=''):
                     audio=audio,
                     queries_in=queries_in,
                     dirname=dirname,
+                )
+        if QUERIES is not None and query is not '':
+            try:
+                QUERIES.add(
+                    query=query,
+                    basenames=[basename],
+                )
+            except AssertionError:
+                hash_id = QUERIES.get_hash_id_for_unique_value(query)
+                basenames = QUERIES.get(
+                    hash_id,
+                    'basenames',
+                    update_get_stats=False
+                )['basenames']
+                if basename not in basenames:
+                    basenames.append(basename)
+                QUERIES.update(
+                    hash_id,
+                    basenames=basenames
+                )
+        if URLS is not None and url is not '':
+            domain = urlparse(url).netloc.replace('www.', '')
+            try:
+                URLS.add(
+                    url=url,
+                    domain=domain,
+                    basenames=[basename],
+                )
+            except AssertionError:
+                hash_id = URLS.get_hash_id_for_unique_value(url)
+                basenames = URLS.get(
+                    hash_id,
+                    'basenames',
+                    update_get_stats=False
+                )['basenames']
+                if basename not in basenames:
+                    basenames.append(basename)
+                URLS.update(
+                    hash_id,
+                    basenames=basenames
                 )
 
 
