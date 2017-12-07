@@ -5,8 +5,17 @@ import logging
 from glob import glob
 from pprint import pprint
 from functools import partial
-from urllib.parse import urlparse
 import youtube_dl
+try:
+    from parse_helper import get_domain
+
+except ImportError:
+    from urllib.parse import urlparse
+
+    def get_domain(url):
+        """Return the domain of a url"""
+        return urlparse(url).netloc.replace('www.', '')
+
 try:
     import redis_helper as rh
     import input_helper as ih
@@ -201,7 +210,7 @@ def my_hook(d, url='', query='', dirname='', vid='', audio=''):
                     basenames=basenames
                 )
         if URLS is not None and url is not '':
-            domain = urlparse(url).netloc.replace('www.', '')
+            domain = get_domain(url)
             try:
                 URLS.add(
                     url=url,
