@@ -6,14 +6,14 @@ with open('README.rst', 'r') as fp:
 
 setup(
     name='yt-helper',
-    version='0.2.3',
+    version='0.2.4',
     description='Light wrapper to youtube-dl',
     long_description=long_description,
     author='Ken',
     author_email='kenjyco@gmail.com',
     license='MIT',
     url='https://github.com/kenjyco/yt-helper',
-    download_url='https://github.com/kenjyco/yt-helper/tarball/v0.2.3',
+    download_url='https://github.com/kenjyco/yt-helper/tarball/v0.2.4',
     packages=find_packages(),
     install_requires=[
         'youtube-dl',
