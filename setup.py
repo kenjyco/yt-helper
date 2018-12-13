@@ -19,6 +19,7 @@ setup(
         'youtube-dl',
         'click',
         'input-helper',
+        'fs-helper',
     ],
     include_package_data=True,
     package_dir={'': '.'},
