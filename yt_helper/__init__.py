@@ -85,7 +85,7 @@ See:
 """
 
 
-LOGFILE = os.path.abspath('log--yt-helper.log')
+LOGFILE = os.path.abspath(os.path.expanduser('~/logs/yt-helper.log'))
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 file_handler = logging.FileHandler(LOGFILE, mode='a')
