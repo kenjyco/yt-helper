@@ -86,6 +86,7 @@ See:
 
 
 logger = fh.get_logger(__name__)
+LOGFILE = fh.get_logfile_from_logger(logger)
 IGNORE_INFO_KEYS = (
     'age_limit',
     'annotations',
