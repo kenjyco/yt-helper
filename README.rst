@@ -5,7 +5,9 @@ Install system av tools
 
 ::
 
-   % sudo apt-get install -y libav-tools sox rtmpdump
+   % sudo apt-get install -y sox rtmpdump
+   % sudo apt-get install -y libav-tools
+   % [[ $? -ne 0 ]] && sudo apt-get install -y ffmpeg
 
    or
 
