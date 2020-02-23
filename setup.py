@@ -16,10 +16,10 @@ setup(
     download_url='https://github.com/kenjyco/yt-helper/tarball/v0.2.6',
     packages=find_packages(),
     install_requires=[
-        'youtube-dl',
         'click',
-        'input-helper',
         'fs-helper',
+        'input-helper',
+        'youtube-dl',
     ],
     include_package_data=True,
     package_dir={'': '.'},

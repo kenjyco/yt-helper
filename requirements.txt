@@ -1,3 +1,4 @@
-youtube-dl
 click
+fs-helper
 input-helper
+youtube-dl
