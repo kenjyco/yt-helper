@@ -254,6 +254,7 @@ def av_from_url(url, **kwargs):
     ydl_opts = {
         'restrictfilenames': True,
         'ignoreerrors': True,
+        'nocheckcertificate': True,
         'noplaylist': not kwargs.get('playlist', False),
         'quiet': True,
         'writethumbnail': kwargs.get('thumbnail', False),
