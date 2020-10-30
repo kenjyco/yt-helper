@@ -60,7 +60,8 @@ relevant info to them.
 
    See: https://github.com/kenjyco/redis-helper#intro
 
-Install Redis and start server
+If you don’t have `docker <https://docs.docker.com/get-docker>`__
+installed, install Redis and start server
 
 ::
 
@@ -68,8 +69,8 @@ Install Redis and start server
 
    or
 
-   % brew install redis@3.2
-   % brew services start redis@3.2
+   % brew install redis
+   % brew services start redis
 
 Install with ``pip``
 
