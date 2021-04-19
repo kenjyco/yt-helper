@@ -179,7 +179,7 @@ def my_hook(d, url='', query='', dirname='', vid='', audio=''):
                     queries_in=queries_in,
                     dirname=dirname,
                 )
-        if QUERIES is not None and query is not '':
+        if QUERIES is not None and query != '':
             try:
                 QUERIES.add(
                     query=query,
@@ -198,7 +198,7 @@ def my_hook(d, url='', query='', dirname='', vid='', audio=''):
                     hash_id,
                     basenames=basenames
                 )
-        if URLS is not None and url is not '':
+        if URLS is not None and url != '':
             domain = get_domain(url)
             try:
                 URLS.add(
