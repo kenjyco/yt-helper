@@ -232,6 +232,7 @@ def av_from_url(url, **kwargs):
     - template: string representing generated filenames
     - audio_only: if True, don't keep the video file if one is downloaded
     - mp3: if True, convert downloaded audio to MP3 file
+    - verbose: if True, show extra debugging output
     - logger: a logger object with `debug`, `warning`, `error`, `info` methods
       that accept a message string and do something with it
     - hook: progress hook function that accepts a single positional argument
@@ -256,7 +257,8 @@ def av_from_url(url, **kwargs):
         'ignoreerrors': True,
         'nocheckcertificate': True,
         'noplaylist': not kwargs.get('playlist', False),
-        'quiet': True,
+        'quiet': not kwargs.get('verbose', False),
+        'verbose': kwargs.get('verbose', False),
         'writethumbnail': kwargs.get('thumbnail', False),
         'writedescription': kwargs.get('description', False),
         'writesubtitles': kwargs.get('subtitles', False),

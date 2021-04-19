@@ -36,6 +36,10 @@ import yt_helper as yh
     '--mp3', '-m', 'mp3', is_flag=True, default=False,
     help='Convert downloaded audio to MP3 file'
 )
+@click.option(
+    '--verbose', '-v', 'verbose', is_flag=True, default=False,
+    help='Show extra debugging output'
+)
 @click.argument('args', nargs=-1)
 def main(**kwargs):
     """Wrapper to 'av_from_url'
