@@ -5,13 +5,11 @@ Install system av tools
 
 ::
 
-   % sudo apt-get install -y sox rtmpdump
-   % sudo apt-get install -y libav-tools
-   % [[ $? -ne 0 ]] && sudo apt-get install -y ffmpeg
+   % sudo apt-get install -y ffmpeg sox rtmpdump
 
    or
 
-   % brew install libav sox rtmpdump
+   % brew install ffmpeg sox rtmpdump
 
 Install with ``pip``
 
@@ -43,6 +41,7 @@ The ``yt-download`` script is provided
      -s, --subtitles           Embed subtitles in the downloaded video
      -a, --audio-only          Don't keep the video file if one was downloaded
      -m, --mp3                 Convert downloaded audio to MP3 file
+     -v, --verbose             Show extra debugging output
      --help                    Show this message and exit.
 
 Optional Installs
