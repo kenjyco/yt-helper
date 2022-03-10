@@ -4,6 +4,9 @@ from setuptools import setup, find_packages
 with open('README.rst', 'r') as fp:
     long_description = fp.read()
 
+with open('requirements.txt', 'r') as fp:
+    requirements = fp.read().splitlines()
+
 setup(
     name='yt-helper',
     version='0.2.9',
@@ -15,16 +18,11 @@ setup(
     url='https://github.com/kenjyco/yt-helper',
     download_url='https://github.com/kenjyco/yt-helper/tarball/v0.2.9',
     packages=find_packages(),
-    install_requires=[
-        'click',
-        'fs-helper',
-        'input-helper',
-        'youtube-dl',
-    ],
+    install_requires=requirements,
     include_package_data=True,
     package_dir={'': '.'},
     package_data={
-        '' : ['*.ini'],
+        '': ['*.ini'],
     },
     entry_points={
         'console_scripts': [
