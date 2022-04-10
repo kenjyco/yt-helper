@@ -12,14 +12,14 @@ with open('requirements-redis-helper.txt', 'r') as fp:
 
 setup(
     name='yt-helper',
-    version='0.2.9',
+    version='0.2.10',
     description='Light wrapper to youtube-dl with a simplified CLI for downloading media',
     long_description=long_description,
     author='Ken',
     author_email='kenjyco@gmail.com',
     license='MIT',
     url='https://github.com/kenjyco/yt-helper',
-    download_url='https://github.com/kenjyco/yt-helper/tarball/v0.2.9',
+    download_url='https://github.com/kenjyco/yt-helper/tarball/v0.2.10',
     packages=find_packages(),
     install_requires=requirements,
     extras_require={
