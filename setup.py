@@ -7,6 +7,9 @@ with open('README.rst', 'r') as fp:
 with open('requirements.txt', 'r') as fp:
     requirements = fp.read().splitlines()
 
+with open('requirements-redis-helper.txt', 'r') as fp:
+    requirements_redis_helper = fp.read().splitlines()
+
 setup(
     name='yt-helper',
     version='0.2.9',
@@ -19,6 +22,9 @@ setup(
     download_url='https://github.com/kenjyco/yt-helper/tarball/v0.2.9',
     packages=find_packages(),
     install_requires=requirements,
+    extras_require={
+        'redis-helper': requirements_redis_helper,
+    },
     include_package_data=True,
     package_dir={'': '.'},
     package_data={
