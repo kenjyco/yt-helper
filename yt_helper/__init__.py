@@ -9,7 +9,7 @@ import youtube_dl
 try:
     from parse_helper import get_domain
 
-except ImportError:
+except (ImportError, ModuleNotFoundError):
     from urllib.parse import urlparse
 
     def get_domain(url):
@@ -21,7 +21,7 @@ try:
     import input_helper as ih
     from redis import ConnectionError as RedisConnectionError
 
-except ImportError:
+except (ImportError, ModuleNotFoundError):
     QUERIES = None
     URLS = None
     FILES = None

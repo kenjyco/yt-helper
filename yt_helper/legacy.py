@@ -3,7 +3,7 @@ try:
     import input_helper as ih
     from redis import ConnectionError as RedisConnectionError
 
-except ImportError:
+except (ImportError, ModuleNotFoundError):
     COMMENTS = None
 else:
     try:
