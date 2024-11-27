@@ -7,6 +7,12 @@ from pprint import pprint
 from functools import partial
 import youtube_dl
 try:
+    ModuleNotFoundError
+except NameError:
+    class ModuleNotFoundError(ImportError):
+        pass
+
+try:
     from parse_helper import get_domain
 
 except (ImportError, ModuleNotFoundError):

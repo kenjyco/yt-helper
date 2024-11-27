@@ -1,3 +1,10 @@
+
+try:
+    ModuleNotFoundError
+except NameError:
+    class ModuleNotFoundError(ImportError):
+        pass
+
 try:
     import redis_helper as rh
     import input_helper as ih
